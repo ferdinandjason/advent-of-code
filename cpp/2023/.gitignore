@@ -4,6 +4,6 @@ CMakeCache.txt
 CMakeLists.txt
 Makefile
 
-input/*
+input/day*
 
 aoc

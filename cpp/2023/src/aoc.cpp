@@ -47,7 +47,7 @@ void aoc::do_aoc(int day) {
         aoc[index](input);
         auto t_end = chrono::high_resolution_clock::now();
         
-        printf("time = %s ms\n", std::chrono::duration<double, std::milli>(t_end-t_start).count());
+        printf("elapsed time = %lf ms\n", std::chrono::duration<double, std::milli>(t_end-t_start).count());
     }
 }
 
