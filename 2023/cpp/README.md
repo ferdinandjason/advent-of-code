@@ -31,7 +31,7 @@ Complete solution for AOC 2023 written in Modern C++ 23
 ## Benchmark
 Benchmark was run on MacBook Pro M1 (14-inch, 2021).
 
-| Day | Benchmark AVG (ms) | Benchmark Min (ms) | Benchmark Stdev (ms) |
+| Day | Average Time (ms) | Min Time (ms) | Stdev (ms) |
 | --- | :-: | :-: | :-: |
 |  1 | `0.042` | `0.040` | `0.004` |
 |  2 | `0.016` | `0.014` | `0.002` |

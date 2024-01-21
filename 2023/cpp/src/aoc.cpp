@@ -117,7 +117,7 @@ void aoc::bench(int count) {
         global_std_time.push_back(std);
     }
 
-    printf("| Day | Benchmark AVG (ms) | Benchmark Min (ms) | Benchmark Stdev (ms) | \n");
+    printf("| Day | Average Time (ms) | Min Time (ms) | Stdev (ms) | \n");
     printf("| --- | :-: | :-: | :-: |\n");
     for(int i = 0; i < aoc.size(); i++) {
         printf("| %2d | `%3.3lf` | `%3.3lf` | `%3.3lf` | \n", i + 1, global_mean_time[i], global_min_time[i], global_std_time[i]);
