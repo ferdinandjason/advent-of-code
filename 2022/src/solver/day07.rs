@@ -12,13 +12,13 @@ fn parse_command<'a>(cmd: &'a str) -> Command<'a> {
 }
 
 pub enum Entry<'a> {
-    Dir(&'a str),
+    Dir,
     File(u64, &'a str),
 }
 
 fn parse_entry<'a>(entry: &'a str) -> Entry<'a> {
     if entry.starts_with("dir") {
-        return Entry::Dir(&entry[4..])
+        return Entry::Dir
     } else {
         let (size, name) = entry.split_once(" ").unwrap();
         return Entry::File(size.parse::<u64>().unwrap(), name)
@@ -100,7 +100,7 @@ pub fn solve(input: &Vec<List>) -> (u64, u64) {
                 },
             },
             List::Entry(entry) => match entry {
-                Entry::Dir(_) => {},
+                Entry::Dir => {},
                 Entry::File(size, path) => {
                     let node = Node{
                         size: *size,
