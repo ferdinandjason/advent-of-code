@@ -41,7 +41,7 @@ macro_rules! solve {
         Solver {
             day: (&stringify!($day)[3..]).parse::<u8>().unwrap(),
             wrapper: |data: &str| {
-                use aoc2024::solver::$day::*;
+                use solver::$day::*;
 
                 let input = parse(&data);
                 let (part1, part2) = solve(&input);
@@ -55,5 +55,6 @@ macro_rules! solve {
 fn aoc() -> Vec<Solver> {
     vec![
         solve!(day01),
+        solve!(day02),
     ]
 }
