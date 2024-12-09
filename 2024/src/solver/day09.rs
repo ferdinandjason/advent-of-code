@@ -1,3 +1,7 @@
+use std::{cmp::Reverse, collections::BinaryHeap, usize};
+
+use itertools::Itertools;
+
 pub fn parse(input: &str) -> Vec<FileBlock> {
     let mut id = 0;
     let mut sign = 0;
@@ -79,25 +83,57 @@ fn part1(input: &[FileBlock]) -> u64 {
 
 fn part2(input: &[FileBlock]) -> u64 {
     let mut fbs = input.iter().cloned().collect::<Vec<_>>();
+    let mut memo = vec![BinaryHeap::<Reverse<usize>>::new(); 10];
+
+    for i in 0..fbs.len() {
+        if fbs[i].id.is_none() {
+            memo[fbs[i].qty as usize].push(Reverse(i));
+        }
+    }
+
     for i in (0..fbs.len()).rev() {
         if let Some(id) = fbs[i].id {
-            for j in 0..i {
-                if fbs[j].id == None && fbs[j].qty >= fbs[i].qty {
-                    if fbs[j].gaps.is_none() {
-                        fbs[j].gaps = Some(Vec::new());
+            if let Some(idxs) = memo
+                .iter()
+                .sorted_by(|a, b| {
+                    Ord::cmp(
+                        &b.peek().unwrap_or(&Reverse(usize::max_value())),
+                        &a.peek().unwrap_or(&Reverse(usize::max_value())),
+                    )
+                })
+                .into_iter()
+                .find(|idxs| {
+                    if let Some(idx) = idxs.peek() {
+                        let j = (*idx).0;
+                        return fbs[j].id == None && fbs[j].qty >= fbs[i].qty && j < i;
                     }
 
-                    let fb = FileBlock {
-                        id: Some(id),
-                        qty: fbs[i].qty,
-                        gaps: None,
-                    };
+                    false
+                })
+            {
+                let j = (*idxs.peek().unwrap()).0;
+                memo[fbs[j].qty as usize].pop();
 
-                    fbs[j].gaps.as_mut().unwrap().push(fb);
-                    fbs[j].qty -= fbs[i].qty;
-                    fbs[i].id = None;
+                if fbs[j].gaps.is_none() {
+                    fbs[j].gaps = Some(Vec::new());
+                }
 
-                    break;
+                let fb = FileBlock {
+                    id: Some(id),
+                    qty: fbs[i].qty,
+                    gaps: None,
+                };
+
+                fbs[j].gaps.as_mut().unwrap().push(fb);
+                fbs[j].qty -= fbs[i].qty;
+                fbs[i].id = None;
+
+                if fbs[j].qty > 0 {
+                    memo[fbs[j].qty as usize].push(Reverse(j));
+                }
+
+                if fbs[i].qty > 0 {
+                    memo[fbs[i].qty as usize].push(Reverse(i));
                 }
             }
         }
