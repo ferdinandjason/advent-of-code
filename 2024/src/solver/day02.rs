@@ -1,8 +1,8 @@
 pub fn parse(input: &str) -> Vec<Vec<i8>> {
     input
-        .split("\n")
+        .lines()
         .map(|s| {
-            s.split(" ")
+            s.split_whitespace()
                 .map(|i| i.parse::<i8>().unwrap())
                 .collect::<Vec<_>>()
         })
@@ -26,18 +26,17 @@ fn is_safe_dec(a: i8, b: i8) -> bool {
 pub fn part1(input: &[Vec<i8>]) -> usize {
     input
         .iter()
-        .map(|v| {
+        .filter(|&v| {
             v.windows(2)
                 .all(|w| is_safe_inc(w[0], w[1]) || v.windows(2).all(|w| is_safe_dec(w[0], w[1])))
         })
-        .filter(|&b| b)
         .count()
 }
 
 pub fn part2(input: &[Vec<i8>]) -> usize {
     input
         .iter()
-        .map(|v| {
+        .filter(|&v| {
             if v.windows(2).all(|w| is_safe_inc(w[0], w[1]))
                 || v.windows(2).all(|w| is_safe_dec(w[0], w[1]))
             {
@@ -51,6 +50,5 @@ pub fn part2(input: &[Vec<i8>]) -> usize {
                     || tmp.windows(2).all(|w| is_safe_dec(w[0], w[1]))
             })
         })
-        .filter(|&b| b)
         .count()
 }

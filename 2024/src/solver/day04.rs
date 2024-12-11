@@ -1,7 +1,7 @@
 use std::iter::zip;
 
 pub fn parse(input: &str) -> Vec<&[u8]> {
-    input.split("\n").map(|s| s.as_bytes()).collect()
+    input.lines().map(|s| s.as_bytes()).collect()
 }
 
 pub fn solve(input: &[&[u8]]) -> (usize, usize) {
@@ -9,11 +9,10 @@ pub fn solve(input: &[&[u8]]) -> (usize, usize) {
     let (mut xmas_count, mut x_mas_count) = (0, 0);
     for i in 0..n {
         for j in 0..m {
-            if input[i][j] == 'X' as u8 {
-                xmas_count += find_xmas_neighbors(input, i as i32, j as i32)
-            }
-            if input[i][j] == 'A' as u8 {
-                x_mas_count += find_x_mas_neighbors(input, i as i32, j as i32);
+            match input[i][j] {
+                b'X' => xmas_count += find_xmas_neighbors(input, i as i32, j as i32),
+                b'A' => x_mas_count += find_x_mas_neighbors(input, i as i32, j as i32),
+                _ => (),
             }
         }
     }
@@ -24,9 +23,9 @@ pub fn solve(input: &[&[u8]]) -> (usize, usize) {
 const DX: [i32; 8] = [-1, 0, 1, -1, 1, -1, 0, 1];
 const DY: [i32; 8] = [-1, -1, -1, 0, 0, 1, 1, 1];
 
-fn find_xmas_neighbors(input: &[&[u8]], x: i32, y: i32) -> usize {    
+fn find_xmas_neighbors(input: &[&[u8]], x: i32, y: i32) -> usize {
     zip(DX, DY)
-        .map(|(dx, dy)| {
+        .filter(|(dx, dy)| {
             let (mut nx, mut ny) = (x, y);
             let mut neighbors: [u8; 3] = [0; 3];
             for i in 0..3 {
@@ -38,9 +37,8 @@ fn find_xmas_neighbors(input: &[&[u8]], x: i32, y: i32) -> usize {
                 neighbors[i] = input[nx as usize][ny as usize];
             }
 
-            neighbors == "MAS".as_bytes()
+            neighbors == *b"MAS"
         })
-        .filter(|n| *n)
         .count()
 }
 

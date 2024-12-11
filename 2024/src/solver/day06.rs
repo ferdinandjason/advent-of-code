@@ -1,7 +1,7 @@
 use std::collections::HashSet;
 
 pub fn parse(input: &str) -> Vec<Vec<u8>> {
-    input.split('\n').map(|s| s.as_bytes().to_owned()).collect()
+    input.lines().map(|s| s.as_bytes().to_owned()).collect()
 }
 
 pub fn solve(map: &[Vec<u8>]) -> (i32, i32) {

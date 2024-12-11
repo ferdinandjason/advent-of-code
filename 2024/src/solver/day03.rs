@@ -24,26 +24,23 @@ pub fn part2(input: &str) -> u64 {
     let mut enable = true;
     re_do_mul
         .captures_iter(input)
-        .map(|caps| {
-            match caps.get(0).unwrap().as_str() {
-                "do()" => {
-                    enable = true;
-                    0
-                }
-                "don't()" => {
-                    enable = false;
-                    0
-                }
-                _ if enable => {
-                    if let (Some(a), Some(b)) = (caps.get(1), caps.get(2)) {
-                        a.as_str().parse::<u64>().unwrap()
-                            * b.as_str().parse::<u64>().unwrap()
-                    } else {
-                        0
-                    }
-                },
-                _ => 0,
+        .map(|caps| match caps.get(0).unwrap().as_str() {
+            "do()" => {
+                enable = true;
+                0
             }
+            "don't()" => {
+                enable = false;
+                0
+            }
+            _ if enable => {
+                if let (Some(a), Some(b)) = (caps.get(1), caps.get(2)) {
+                    a.as_str().parse::<u64>().unwrap() * b.as_str().parse::<u64>().unwrap()
+                } else {
+                    0
+                }
+            }
+            _ => 0,
         })
         .sum::<u64>()
 }

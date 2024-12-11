@@ -10,14 +10,14 @@ pub fn parse(input: &str) -> Input {
 
     Input {
         rules: rules_raw
-            .split('\n')
+            .lines()
             .map(|s| {
                 let (u, v) = s.split_once('|').unwrap();
                 (u.parse().unwrap(), v.parse().unwrap())
             })
             .collect::<Vec<_>>(),
         query: query_raw
-            .split('\n')
+            .lines()
             .map(|s| s.split(',').map(|i| i.parse().unwrap()).collect())
             .collect(),
     }
@@ -28,12 +28,12 @@ pub fn solve(input: &Input) -> (i32, i32) {
     input.rules.iter().for_each(|(a, b)| {
         order_map.insert((*a, *b));
     });
-    let mut part1 = Vec::with_capacity(input.query.len());
-    let mut part2 = Vec::with_capacity(input.query.len());
+
+    let (mut part1, mut part2) = (0, 0);
 
     input.query.clone().iter_mut().for_each(|v| {
         if v.is_sorted_by(|a, b| order_map.contains(&(*a, *b))) {
-            part1.push(v[v.len() / 2]);
+            part1 += v[v.len() / 2];
         } else {
             v.sort_by(|a, b| {
                 if a == b {
@@ -42,12 +42,12 @@ pub fn solve(input: &Input) -> (i32, i32) {
                 if order_map.contains(&(*a, *b)) {
                     return Ordering::Less;
                 }
-                return Ordering::Greater
+                return Ordering::Greater;
             });
 
-            part2.push(v[v.len() / 2]);
+            part2 += v[v.len() / 2];
         }
     });
 
-    (part1.iter().sum(), part2.iter().sum())
+    (part1, part2)
 }
