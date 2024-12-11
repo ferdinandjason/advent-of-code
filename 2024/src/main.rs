@@ -1,26 +1,29 @@
 mod solver;
 
-use std::{env, time::Instant, path::PathBuf};
+use std::{env, path::PathBuf, time::Instant};
 
 fn main() {
     let day = match env::args().nth(1) {
-        Some(day) => {
-            Some(day.parse::<u8>().unwrap())
-        }
-        None => None
+        Some(day) => Some(day.parse::<u8>().unwrap()),
+        None => None,
     };
 
     let mut elapsed = 0;
-    let solver = aoc().into_iter().filter(|solution| day == Some(solution.day) || day.is_none()).collect::<Vec<_>>();
+    let solver = aoc()
+        .into_iter()
+        .filter(|solution| day == Some(solution.day) || day.is_none())
+        .collect::<Vec<_>>();
 
     for Solver { day, wrapper } in &solver {
-        let path = ["input", &format!("day{day:02}.txt")].iter().collect::<PathBuf>();
+        let path = ["input", &format!("day{day:02}.txt")]
+            .iter()
+            .collect::<PathBuf>();
         let input = std::fs::read_to_string(path).expect("Unable to load input file");
         let time = Instant::now();
         let (answer1, answer2) = wrapper(&input);
         let duration = time.elapsed().as_micros();
         elapsed += duration;
- 
+
         println!("Day {day:02}");
         println!("    Part 1: {answer1}");
         println!("    Part 2: {answer2}");
@@ -64,5 +67,6 @@ fn aoc() -> Vec<Solver> {
         solve!(day08),
         solve!(day09),
         solve!(day10),
+        solve!(day11),
     ]
 }
