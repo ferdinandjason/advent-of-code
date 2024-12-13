@@ -9,7 +9,7 @@ pub fn solve(maps: &[Vec<u8>]) -> (u32, u32) {
     for i in 0..maps.len() {
         for j in 0..maps[i].len() {
             if !seen[i][j] {
-                let (area, perimeter, corners) = flood_fill((i as i32, j as i32), maps, &mut seen);
+                let (area, perimeter, corners) = walk((i as i32, j as i32), maps, &mut seen);
                 part1 += area * perimeter;
                 part2 += area * corners;
             }
@@ -22,7 +22,7 @@ pub fn solve(maps: &[Vec<u8>]) -> (u32, u32) {
 const DX: [i32; 4] = [0, 1, 0, -1];
 const DY: [i32; 4] = [-1, 0, 1, 0];
 
-fn flood_fill(start: (i32, i32), maps: &[Vec<u8>], seen: &mut Vec<Vec<bool>>) -> (u32, u32, u32) {
+fn walk(start: (i32, i32), maps: &[Vec<u8>], seen: &mut Vec<Vec<bool>>) -> (u32, u32, u32) {
     let (mut area, mut perimeter, mut corners) = (1, 0, 0);
     seen[start.0 as usize][start.1 as usize] = true;
 
@@ -56,8 +56,7 @@ fn flood_fill(start: (i32, i32), maps: &[Vec<u8>], seen: &mut Vec<Vec<bool>>) ->
         if maps[x as usize][y as usize] == maps[start.0 as usize][start.1 as usize]
             && !seen[x as usize][y as usize]
         {
-            let (sub_area, sub_perimeter, sub_corners) =
-                flood_fill((x as i32, y as i32), maps, seen);
+            let (sub_area, sub_perimeter, sub_corners) = walk((x as i32, y as i32), maps, seen);
             area += sub_area;
             perimeter += sub_perimeter;
             corners += sub_corners;

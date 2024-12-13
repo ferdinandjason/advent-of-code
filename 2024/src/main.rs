@@ -69,5 +69,6 @@ fn aoc() -> Vec<Solver> {
         solve!(day10),
         solve!(day11),
         solve!(day12),
+        solve!(day13),
     ]
 }
