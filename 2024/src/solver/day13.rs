@@ -1,6 +1,5 @@
 use itertools::Itertools;
 
-#[derive(Debug)]
 pub struct Input {
     a: (i64, i64),
     b: (i64, i64),

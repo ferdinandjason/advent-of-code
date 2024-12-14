@@ -49,10 +49,6 @@ fn walk(start: (i32, i32), maps: &[Vec<u8>], seen: &mut Vec<Vec<bool>>) -> (u32,
             continue;
         }
 
-        if maps[x as usize][y as usize] != maps[start.0 as usize][start.1 as usize] {
-            continue;
-        }
-
         if maps[x as usize][y as usize] == maps[start.0 as usize][start.1 as usize]
             && !seen[x as usize][y as usize]
         {
