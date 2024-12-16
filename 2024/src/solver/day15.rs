@@ -144,7 +144,8 @@ fn simulate_move_part2(maps: &mut Vec<Vec<u8>>, (x, y): (i32, i32), d: &Directio
 fn boxes_part(maps: &Vec<Vec<u8>>, (nx, ny): (i32, i32)) -> (i32, i32) {
     if maps[nx as usize][(ny - 1) as usize] == b'[' && maps[nx as usize][ny as usize] == b']' {
         (nx, ny - 1)
-    } else if maps[nx as usize][(ny + 1) as usize] == b']' && maps[nx as usize][ny as usize] == b'[' {
+    } else if maps[nx as usize][(ny + 1) as usize] == b']' && maps[nx as usize][ny as usize] == b'['
+    {
         (nx, ny + 1)
     } else {
         unimplemented!()
