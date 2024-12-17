@@ -2,80 +2,82 @@ use itertools::Itertools;
 
 #[derive(Clone, Debug)]
 pub struct Input {
-    a: u32,
-    b: u32,
-    c: u32,
+    a: u64,
+    b: u64,
+    c: u64,
 
-    inst: Vec<u32>,
-}
-
-impl Input {
-    fn new(a: u32, b: u32, c: u32, inst: Vec<u32>) -> Self {
-        Self {a, b, c, inst}
-    }
+    inst: Vec<u64>,
 }
 
 pub fn parse(input: &str) -> Input {
     let (reg, inst) = input.split_once("\n\n").unwrap();
-    let regs = reg.lines().map(|line| line[12..].parse().unwrap()).collect::<Vec<u32>>();
-    
+    let regs = reg
+        .lines()
+        .map(|line| line[12..].parse().unwrap())
+        .collect::<Vec<u64>>();
+
     Input {
         a: regs[0],
         b: regs[1],
         c: regs[2],
 
-        inst: inst[9..].split(',').map(|chunk| chunk.parse().unwrap()).collect()
+        inst: inst[9..]
+            .split(',')
+            .map(|chunk| chunk.parse().unwrap())
+            .collect(),
     }
 }
 
-pub fn solve(input: &Input) -> (String, u32) {
-    let part1 = input.clone();
-    let mut a = 0;
-    while compute(Input::new(a, 0, 0, input.inst.clone())) != input.inst {
-        a += 1;
-    }
-
-
-    (compute(part1).iter().join(","), a)
+pub fn solve(input: &Input) -> (String, u64) {
+    (
+        compute(input.a, input.b, input.c, &input.inst)
+            .iter()
+            .join(","),
+        find_quine(&input.inst, input.inst.len(), 0),
+    )
 }
 
-fn compute(mut data: Input) -> Vec<u32> {
+fn find_quine(inst: &Vec<u64>, idx: usize, value: u64) -> u64 {
+    if idx == 0 {
+        return if compute(value, 0, 0, inst) == *inst {
+            value
+        } else {
+            0
+        };
+    }
+
+    for a in 0..8 {
+        let new_value = value * 8 + a;
+        if compute(new_value, 0, 0, inst)[0] == inst[idx - 1] {
+            if let result @ 1.. = find_quine(inst, idx - 1, new_value) {
+                return result;
+            }
+        }
+    }
+
+    0
+}
+
+fn compute(mut a: u64, mut b: u64, mut c: u64, inst: &Vec<u64>) -> Vec<u64> {
     let mut output = Vec::new();
     let mut ptr = 0;
-    while ptr < data.inst.len() {
-        let operand = data.inst[ptr + 1];
-        match data.inst[ptr] {
-            0 => {
-                data.a >>= to_combo(operand, &data);
-            },
-            1 => {
-                data.b ^= operand;
-            },
-            2 => {
-                data.b = to_combo(operand, &data) % 8;
-            },
+    while ptr < inst.len() {
+        let operand = inst[ptr + 1];
+        match inst[ptr] {
+            0 => a >>= to_combo(operand, a, b, c),
+            1 => b ^= operand,
+            2 => b = to_combo(operand, a, b, c) % 8,
             3 => {
-                match data.a {
-                    0 => (),
-                    _ => {
-                        ptr = operand as usize;
-                        continue;
-                    }
+                if a != 0 {
+                    ptr = operand as usize;
+                    continue;
                 }
-            },
-            4 => {
-                data.b ^=  data.c
-            },
-            5 => {
-                output.push(to_combo(operand, &data) % 8);
-            },
-            6 => {
-                data.b = data.a >> to_combo(operand, &data);
-            },
-            7 => {
-                data.c = data.a >> to_combo(operand, &data);
-            },
-            _ => unimplemented!()
+            }
+            4 => b ^= c,
+            5 => output.push(to_combo(operand, a, b, c) % 8),
+            6 => b = a >> to_combo(operand, a, b, c),
+            7 => c = a >> to_combo(operand, a, b, c),
+            _ => unimplemented!(),
         }
 
         ptr += 2;
@@ -84,12 +86,12 @@ fn compute(mut data: Input) -> Vec<u32> {
     output
 }
 
-fn to_combo(operand: u32, data: &Input) -> u32 {
+fn to_combo(operand: u64, a: u64, b: u64, c: u64) -> u64 {
     match operand {
         0..=3 => operand,
-        4 => data.a,
-        5 => data.b,
-        6 => data.c,
-        _ => unimplemented!()
+        4 => a,
+        5 => b,
+        6 => c,
+        _ => unimplemented!(),
     }
-} 
+}
