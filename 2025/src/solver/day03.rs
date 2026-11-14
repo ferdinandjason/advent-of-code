@@ -3,10 +3,7 @@ pub fn parse(input: &str) -> Vec<&str> {
 }
 
 pub fn solve(input: &Vec<&str>) -> (u64, u64) {
-    (
-        calculate(input, 2),
-        calculate(input, 12)
-    )
+    (calculate(input, 2), calculate(input, 12))
 }
 
 fn calculate(input: &Vec<&str>, n: usize) -> u64 {

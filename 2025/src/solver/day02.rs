@@ -18,15 +18,14 @@ pub fn solve(input: &Vec<(u64, u64)>) -> (u64, u64) {
             let mut sum = 0;
 
             if sn % 2 == 0 {
-                let st = (&ss[0..sn/2]).parse::<u64>().unwrap();
+                let st = (&ss[0..sn / 2]).parse::<u64>().unwrap();
                 let et = if en % 2 == 0 {
-                    (&ee[0..en/2]).parse::<u64>().unwrap()
+                    (&ee[0..en / 2]).parse::<u64>().unwrap()
                 } else {
                     10_u64.pow((en as u32 + 1u32) / 2)
                 };
 
-
-                for i in st..=(et+1) {
+                for i in st..=(et + 1) {
                     let di = i.ilog10() + 1;
                     let ni = i * 10_u64.pow(di) + i;
                     if ni >= *start && ni <= *end {
@@ -36,13 +35,12 @@ pub fn solve(input: &Vec<(u64, u64)>) -> (u64, u64) {
             } else {
                 let st = 10_u64.pow((sn as u32 + 1u32) / 2 - 1);
                 let et = if en % 2 == 0 {
-                    (&ee[0..en/2]).parse::<u64>().unwrap()
+                    (&ee[0..en / 2]).parse::<u64>().unwrap()
                 } else {
                     10_u64.pow((en as u32 + 1u32) / 2)
                 };
 
-
-                for i in st..=(et+1) {
+                for i in st..=(et + 1) {
                     let di = i.ilog10() + 1;
                     let ni = i * 10_u64.pow(di) + i;
                     if ni >= *start && ni <= *end {
